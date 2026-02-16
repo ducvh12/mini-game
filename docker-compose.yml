@@ -40,7 +40,7 @@ services:
         condition: service_healthy
     networks:
       - wheel-network
-    command: sh -c "sleep 5 && npm run db:seed && node server.js"
+    command: sh -c "node server.js"
 
 networks:
   wheel-network:
