@@ -8,20 +8,23 @@ import { EventConfig } from './entities/EventConfig';
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/wheel_minigame',
-  synchronize: true, // Auto-create tables (only for development)
+  synchronize: false, // Auto-create tables (only for development)
   logging: false,
   entities: [PlayerSession, Reward, SpinLog, EventConfig],
   subscribers: [],
   migrations: [],
 });
 
-let isInitialized = false;
+let initPromise: Promise<DataSource> | null = null;
 
 export async function getDataSource() {
-  if (!isInitialized) {
-    await AppDataSource.initialize();
-    isInitialized = true;
-    console.log('✅ Database connected');
+  if (AppDataSource.isInitialized) return AppDataSource;
+
+  if (!initPromise) {
+    initPromise = AppDataSource.initialize();
   }
+
+  await initPromise;
+  console.log('✅ Database connected');
   return AppDataSource;
 }
