@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, Index } from 'typeorm';
-import { SpinLog } from './SpinLog';
+
 
 @Entity('player_sessions')
 @Index(['ipAddress', 'createdAt'])

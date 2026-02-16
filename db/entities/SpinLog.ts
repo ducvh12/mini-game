@@ -8,8 +8,8 @@ import {
   Index,
 } from 'typeorm';
 
-import type { PlayerSession } from './PlayerSession';
-import type { Reward } from './Reward';
+import { PlayerSession } from './PlayerSession';
+import { Reward } from './Reward';
 
 @Entity('spin_logs')
 @Index(['createdAt'])
@@ -41,14 +41,14 @@ export class SpinLog {
   createdAt!: Date;
 
   @ManyToOne(
-    () => require('./PlayerSession').PlayerSession,
+    () => PlayerSession,
     { onDelete: 'CASCADE' }
   )
   @JoinColumn({ name: 'sessionId' })
   session!: PlayerSession;
 
   @ManyToOne(
-    () => require('./Reward').Reward
+    () => Reward
   )
   @JoinColumn({ name: 'rewardId' })
   reward!: Reward;
