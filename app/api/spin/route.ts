@@ -15,7 +15,7 @@ interface RewardEntity {
   message: string;
 }
 
-function selectReward(rewards: RewardEntity[]): RewardEntity | null {
+function selectReward(rewards: Reward[]): Reward | null {
   const activeRewards = rewards.filter(
     (r) => r.status === 'active' && (r.quantityLimit === 0 || r.quantityRemaining > 0)
   );
@@ -27,9 +27,7 @@ function selectReward(rewards: RewardEntity[]): RewardEntity | null {
 
   for (const reward of activeRewards) {
     random -= reward.probability;
-    if (random <= 0) {
-      return reward;
-    }
+    if (random <= 0) return reward;
   }
 
   return activeRewards[0];
@@ -135,8 +133,10 @@ export async function POST(req: Request) {
     await sessionRepo.save(session);
 
     if (selectedReward.quantityLimit > 0) {
-      selectedReward.quantityRemaining = Math.max(0, selectedReward.quantityRemaining - 1);
-      await rewardRepo.save(selectedReward);
+      await rewardRepo.update(
+        { id: selectedReward.id },
+        { quantityRemaining: Math.max(0, selectedReward.quantityRemaining - 1) }
+      );
     }
 
     return NextResponse.json({
