@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getRepository, SpinLog } from '@/db';
+import { getDataSource } from '@/db';
 
 export async function GET() {
   try {
-    const spinLogRepo = await getRepository<SpinLog>(SpinLog);
-    const recentSpins = await spinLogRepo.find({
-      take: 5,
-      order: { 
-        rewardValue: 'DESC',
-        createdAt: 'DESC'
-      },
-      select: ['playerName', 'rewardName', 'rewardValue', 'createdAt'],
-    });
+    const dataSource = await getDataSource();
+    
+    // Use raw query to sort by numeric value
+    const recentSpins = await dataSource.query(`
+      SELECT "playerName", "rewardName", "rewardValue", "createdAt"
+      FROM spin_logs
+      ORDER BY CAST("rewardValue" AS INTEGER) DESC, "createdAt" DESC
+      LIMIT 5
+    `);
 
     return NextResponse.json(recentSpins);
   } catch (error) {

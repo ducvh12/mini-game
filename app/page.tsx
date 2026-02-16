@@ -29,7 +29,7 @@ interface RecentSpin {
 }
 
 export default function Home() {
-  const [stage, setStage] = useState<'landing' | 'spinning' | 'result'>('landing');
+  const [stage, setStage] = useState<'landing' | 'spinning' | 'reveal' | 'result'>('landing');
   const [playerName, setPlayerName] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [spinning, setSpinning] = useState(false);
@@ -39,18 +39,19 @@ export default function Home() {
   const [recentSpins, setRecentSpins] = useState<RecentSpin[]>([]);
   const [wheelRewards, setWheelRewards] = useState<WheelReward[]>([]);
   const [selectedRewardIndex, setSelectedRewardIndex] = useState<number>(-1);
+  const [isOpeningEnvelope, setIsOpeningEnvelope] = useState(false);
 
-  // Định nghĩa màu sắc cho các phần thưởng
+  // Định nghĩa màu sắc cho các phần thưởng - Chủ đề Tết
   const rewardColors = [
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple
-    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', // Pink
-    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', // Blue
-    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', // Green
-    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // Orange
-    'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', // Teal
-    'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', // Light
-    'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)', // Rose
-    'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', // Peach
+    'linear-gradient(135deg, #ff0000 0%, #ff6b6b 100%)', // Đỏ
+    'linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)', // Vàng
+    'linear-gradient(135deg, #ff4500 0%, #ff8c00 100%)', // Cam đậm
+    'linear-gradient(135deg, #dc143c 0%, #ff69b4 100%)', // Đỏ hồng
+    'linear-gradient(135deg, #ff6347 0%, #ffa07a 100%)', // Cam nhạt
+    'linear-gradient(135deg, #b22222 0%, #ff4040 100%)', // Đỏ sẫm
+    'linear-gradient(135deg, #ffb347 0%, #ffcc33 100%)', // Vàng cam
+    'linear-gradient(135deg, #ff1493 0%, #ff69b4 100%)', // Hồng
+    'linear-gradient(135deg, #cd5c5c 0%, #f08080 100%)', // Đỏ pastel
   ];
 
   useEffect(() => {
@@ -180,9 +181,45 @@ export default function Home() {
     setSelectedRewardIndex(rewardIndex);
     
     setTimeout(() => {
-      setStage('result');
+      setStage('reveal');
       setSpinning(false);
+    }, 500);
+  };
 
+  const handleOpenEnvelope = () => {
+    setIsOpeningEnvelope(true);
+    
+    // Confetti explosion with red and gold colors
+    const duration = 2000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min: number, max: number) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval: any = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.4, 0.6), y: randomInRange(0.4, 0.6) },
+        colors: ['#FFD700', '#FF0000', '#FFA500', '#FFFF00', '#FF6347'],
+      });
+    }, 250);
+
+    // Show result after animation
+    setTimeout(() => {
+      setStage('result');
+      setIsOpeningEnvelope(false);
+      
       if (reward && reward.type === 'money' && parseInt(reward.value) >= 20000) {
         confetti({
           particleCount: 100,
@@ -192,7 +229,7 @@ export default function Home() {
       }
 
       fetchRecentSpins();
-    }, 500);
+    }, 3000);
   };
 
   return (
@@ -343,6 +380,93 @@ export default function Home() {
                   </span>
                 )}
               </motion.button>
+            </motion.div>
+          )}
+
+          {stage === 'reveal' && reward && (
+            <motion.div
+              key="reveal"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="flex flex-col items-center justify-center min-h-[80vh]"
+            >
+              <motion.div className="text-center relative">
+                {/* Envelope Animation */}
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: [0, -3, 3, -3, 0] }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleOpenEnvelope}
+                  className="cursor-pointer mb-8 relative"
+                  animate={isOpeningEnvelope ? { 
+                    scale: [1, 1.5, 2, 0],
+                    rotate: [0, 10, -10, 720],
+                    opacity: [1, 1, 1, 0],
+                  } : { 
+                    y: [0, -15, 0],
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={isOpeningEnvelope ? { 
+                    duration: 1.5,
+                    ease: "easeInOut" 
+                  } : { 
+                    duration: 2, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <div className="text-9xl drop-shadow-2xl filter hover:brightness-110 transition-all relative">
+                    🧧
+                    {!isOpeningEnvelope && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full"
+                        animate={{
+                          boxShadow: [
+                            '0 0 20px rgba(255, 215, 0, 0.5)',
+                            '0 0 40px rgba(255, 215, 0, 0.8)',
+                            '0 0 60px rgba(255, 215, 0, 1)',
+                            '0 0 40px rgba(255, 215, 0, 0.8)',
+                            '0 0 20px rgba(255, 215, 0, 0.5)',
+                          ],
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    )}
+                  </div>
+                </motion.div>
+
+                {!isOpeningEnvelope && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl border-4 border-red-400 max-w-md"
+                  >
+                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600 mb-4">
+                      🎊 Chúc mừng {playerName}! 🎊
+                    </h2>
+                    <p className="text-xl text-gray-700 mb-6">
+                      Bạn đã nhận được một lì xì may mắn!
+                    </p>
+                    <motion.button
+                      onClick={handleOpenEnvelope}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      animate={{ 
+                        boxShadow: [
+                          '0 0 20px rgba(239, 68, 68, 0.5)',
+                          '0 0 40px rgba(239, 68, 68, 0.8)',
+                          '0 0 20px rgba(239, 68, 68, 0.5)',
+                        ],
+                      }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-xl border-4 border-yellow-400 hover:from-red-600 hover:to-orange-600 transition-all"
+                    >
+                      MỞ LÌ XÌ
+                    </motion.button>
+                  </motion.div>
+                )}
+              </motion.div>
             </motion.div>
           )}
 

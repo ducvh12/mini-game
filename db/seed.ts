@@ -29,7 +29,7 @@ async function seed() {
         quantityLimit: 0,
         quantityRemaining: 0,
         status: 'active',
-        message: 'Bạn nhận được lì xì 1.000 VNĐ',
+        message: 'Chúc mừng! Bạn nhận được lì xì 1.000 VNĐ 🧧',
       },
       {
         name: '2K',
@@ -39,7 +39,7 @@ async function seed() {
         quantityLimit: 0,
         quantityRemaining: 0,
         status: 'active',
-        message: 'Bạn nhận được lì xì 2.000 VNĐ',
+        message: 'Tuyệt vời! Bạn nhận được lì xì 2.000 VNĐ 🧧',
       },
       {
         name: '5K',
@@ -49,7 +49,7 @@ async function seed() {
         quantityLimit: 0,
         quantityRemaining: 0,
         status: 'active',
-        message: 'Bạn nhận được lì xì 5.000 VNĐ',
+        message: 'Xuất sắc! Bạn nhận được lì xì 5.000 VNĐ 🧧',
       },
       {
         name: '10K',
@@ -59,7 +59,7 @@ async function seed() {
         quantityLimit: 0,
         quantityRemaining: 0,
         status: 'active',
-        message: 'Bạn nhận được lì xì 10.000 VNĐ',
+        message: 'Tài lộc! Bạn nhận được lì xì 10.000 VNĐ 🧧',
       },
       {
         name: '20K',
@@ -69,7 +69,7 @@ async function seed() {
         quantityLimit: 100,
         quantityRemaining: 100,
         status: 'active',
-        message: 'Bạn nhận được lì xì 20.000 VNĐ',
+        message: 'May mắn quá! Bạn nhận được lì xì 10.000 VNĐ 🧧',
       },
       {
         name: '50K',
@@ -79,7 +79,7 @@ async function seed() {
         quantityLimit: 50,
         quantityRemaining: 50,
         status: 'active',
-        message: 'Bạn nhận được lì xì 50.000 VNĐ',
+        message: 'WOWW! Bạn nhận được lì xì 50.000 VNĐ 🧧',
       },
       {
         name: '100K',
@@ -89,7 +89,7 @@ async function seed() {
         quantityLimit: 10,
         quantityRemaining: 10,
         status: 'active',
-        message: 'Bạn nhận được lì xì 100.000 VNĐ',
+        message: 'Phúc lộc đầy nhà! Bạn nhận được lì xì 100.000 VNĐ 🧧',
       },
     ];
 

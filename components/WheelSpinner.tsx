@@ -65,25 +65,48 @@ export default function WheelSpinner({ rewards, spinning, onSpinComplete }: Whee
             ease: [0.17, 0.67, 0.12, 0.99],
           }}
         >
-          {/* Center circle */}
-          <div className="absolute inset-0 rounded-full overflow-hidden border-8 border-white">
+          {/* SVG for arc segments */}
+          <svg className="absolute inset-0 w-full h-full rounded-full border-8 border-white overflow-hidden" viewBox="0 0 200 200">
+            <defs>
+              {rewards.map((reward, index) => {
+                // Extract colors from gradient string
+                const gradientMatch = reward.color.match(/#[0-9a-fA-F]{6}/g);
+                const startColor = gradientMatch?.[0] || '#ff0000';
+                const endColor = gradientMatch?.[1] || '#ff6b6b';
+                
+                return (
+                  <linearGradient key={`gradient-${reward.id}`} id={`gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor={startColor} />
+                    <stop offset="100%" stopColor={endColor} />
+                  </linearGradient>
+                );
+              })}
+            </defs>
             {rewards.map((reward, index) => {
-              const startAngle = index * segmentAngle - 90; // Start from top
-              const endAngle = startAngle + segmentAngle;
+              const startAngle = (index * segmentAngle - 90) * Math.PI / 180;
+              const endAngle = ((index + 1) * segmentAngle - 90) * Math.PI / 180;
+              
+              const x1 = 100 + 100 * Math.cos(startAngle);
+              const y1 = 100 + 100 * Math.sin(startAngle);
+              const x2 = 100 + 100 * Math.cos(endAngle);
+              const y2 = 100 + 100 * Math.sin(endAngle);
+              
+              const largeArcFlag = segmentAngle > 180 ? 1 : 0;
               
               return (
-                <div
+                <path
                   key={reward.id}
-                  className="absolute inset-0"
-                  style={{
-                    clipPath: `polygon(50% 50%, ${getPoint(startAngle, 50)}, ${getPoint(endAngle, 50)})`,
-                    background: reward.color,
-                  }}
+                  d={`M 100 100 L ${x1} ${y1} A 100 100 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                  fill={`url(#gradient-${index})`}
+                  stroke="white"
+                  strokeWidth="2"
                 />
               );
             })}
+          </svg>
             
-            {/* Text layer - separate from segments */}
+          {/* Text layer - separate from segments */}
+          <div className="absolute inset-0">
             {rewards.map((reward, index) => {
               return (
                 <div
@@ -96,13 +119,12 @@ export default function WheelSpinner({ rewards, spinning, onSpinComplete }: Whee
                 >
                   <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     <div
-                      className="text-white font-black text-base whitespace-nowrap px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-sm shadow-lg border-2 border-white/70"
+                      className="text-4xl"
                       style={{ 
-                        writingMode: 'horizontal-tb',
-                        textShadow: '2px 2px 4px rgba(0,0,0,0.9)',
+                        filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))',
                       }}
                     >
-                      {reward.name}
+                      🧧
                     </div>
                   </div>
                 </div>
