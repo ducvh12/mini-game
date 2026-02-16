@@ -60,14 +60,27 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogin = () => {
-    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      setAuthenticated(true);
-      sessionStorage.setItem('adminAuth', 'true');
-      setError('');
-      loadData();
-    } else {
-      setError('Mật khẩu không đúng');
+  const handleLogin = async () => {
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
+        setAuthenticated(true);
+        sessionStorage.setItem('adminAuth', 'true');
+        setError('');
+        loadData();
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Mật khẩu không đúng');
+      }
+    } catch (err) {
+      setError('Lỗi kết nối');
     }
   };
 
@@ -107,7 +120,7 @@ export default function AdminPage() {
         setResultMessage({ type: 'success', text: 'Đã xóa tất cả sessions! Trang sẽ tự động tải lại...' });
         setShowResultModal(true);
         loadData();
-        
+
         // Clear cookies and reload after 2 seconds
         setTimeout(() => {
           document.cookie.split(";").forEach((c) => {
@@ -164,7 +177,7 @@ export default function AdminPage() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
           <div className="flex justify-between items-center">
-            
+
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirmModal(true)}
@@ -187,21 +200,19 @@ export default function AdminPage() {
           <div className="flex border-b">
             <button
               onClick={() => setActiveTab('stats')}
-              className={`flex-1 py-4 text-lg font-semibold transition-colors ${
-                activeTab === 'stats'
+              className={`flex-1 py-4 text-lg font-semibold transition-colors ${activeTab === 'stats'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+                }`}
             >
               📈 Thống kê
             </button>
             <button
               onClick={() => setActiveTab('rewards')}
-              className={`flex-1 py-4 text-lg font-semibold transition-colors ${
-                activeTab === 'rewards'
+              className={`flex-1 py-4 text-lg font-semibold transition-colors ${activeTab === 'rewards'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+                }`}
             >
               🎁 Quản lý phần thưởng
             </button>
@@ -371,9 +382,8 @@ export default function AdminPage() {
                             <div>
                               <span className="text-gray-600">Trạng thái:</span>
                               <span
-                                className={`font-bold ml-2 ${
-                                  reward.status === 'active' ? 'text-green-600' : 'text-red-600'
-                                }`}
+                                className={`font-bold ml-2 ${reward.status === 'active' ? 'text-green-600' : 'text-red-600'
+                                  }`}
                               >
                                 {reward.status}
                               </span>
@@ -402,7 +412,7 @@ export default function AdminPage() {
               <p className="text-gray-600">
                 Bạn có chắc chắn muốn xóa tất cả sessions và spin logs?
               </p>
-              
+
             </div>
             <div className="flex gap-3">
               <button
