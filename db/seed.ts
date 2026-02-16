@@ -1,14 +1,17 @@
 require('dotenv').config();
+
+import { PlayerSession } from "./entities/PlayerSession";
+import { Reward } from "./entities/Reward";
+import { SpinLog } from "./entities/SpinLog";
+import { EventConfig } from "./entities/EventConfig";
+
 const { DataSource } = require('typeorm');
 
 const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/wheel_minigame',
   synchronize: true,
-  entities: [
-    __dirname + '/entities/*.js',
-    __dirname + '/entities/*.ts',
-  ],
+  entities: [PlayerSession, Reward, SpinLog, EventConfig]
 });
 
 async function seed() {
