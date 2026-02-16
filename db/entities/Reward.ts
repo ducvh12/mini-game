@@ -38,5 +38,5 @@ export class Reward {
   //   () => require('./SpinLog').SpinLog,
   //   (spin: SpinLog) => spin.reward
   // )
-  spins!: SpinLog[];
+  // spins!: SpinLog[];
 }

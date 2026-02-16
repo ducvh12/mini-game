@@ -29,5 +29,5 @@ export class PlayerSession {
   //   () => require('./SpinLog').SpinLog,
   //   (spin: SpinLog) => spin.session
   // )
-  spins!: SpinLog[];
+  // spins!: SpinLog[];
 }

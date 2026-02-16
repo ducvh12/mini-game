@@ -42,16 +42,13 @@ export class SpinLog {
 
   @ManyToOne(
     () => require('./PlayerSession').PlayerSession,
-    (session: PlayerSession) => session.spins,
     { onDelete: 'CASCADE' }
   )
   @JoinColumn({ name: 'sessionId' })
   session!: PlayerSession;
 
   @ManyToOne(
-    () => require('./Reward').Reward,
-    (reward: Reward) => reward.spins,
-    { onDelete: 'SET NULL' }
+    () => require('./Reward').Reward
   )
   @JoinColumn({ name: 'rewardId' })
   reward!: Reward;
