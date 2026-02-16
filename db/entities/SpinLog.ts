@@ -1,4 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from 'typeorm';
+
+import type { PlayerSession } from './PlayerSession';
+import type { Reward } from './Reward';
 
 @Entity('spin_logs')
 @Index(['createdAt'])
@@ -29,11 +40,19 @@ export class SpinLog {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @ManyToOne('PlayerSession', 'spins')
+  @ManyToOne(
+    () => require('./PlayerSession').PlayerSession,
+    (session: PlayerSession) => session.spins,
+    { onDelete: 'CASCADE' }
+  )
   @JoinColumn({ name: 'sessionId' })
-  session!: any;
+  session!: PlayerSession;
 
-  @ManyToOne('Reward', 'spins')
+  @ManyToOne(
+    () => require('./Reward').Reward,
+    (reward: Reward) => reward.spins,
+    { onDelete: 'SET NULL' }
+  )
   @JoinColumn({ name: 'rewardId' })
-  reward!: any;
+  reward!: Reward;
 }

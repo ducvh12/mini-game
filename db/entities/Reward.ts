@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, Index } from 'typeorm';
+import type { SpinLog } from './SpinLog';
 
 @Entity('rewards')
 @Index(['status'])
@@ -33,6 +34,9 @@ export class Reward {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @OneToMany('SpinLog', 'reward')
-  spins!: any[];
+  @OneToMany(
+    () => require('./SpinLog').SpinLog,
+    (spin: SpinLog) => spin.reward
+  )
+  spins!: SpinLog[];
 }

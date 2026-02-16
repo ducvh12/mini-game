@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, Index } from 'typeorm';
+import { SpinLog } from './SpinLog';
 
 @Entity('player_sessions')
 @Index(['ipAddress', 'createdAt'])
@@ -24,6 +25,9 @@ export class PlayerSession {
   @Column({ nullable: true })
   lastSpinAt?: Date;
 
-  @OneToMany('SpinLog', 'session')
-  spins!: any[];
+  @OneToMany(
+    () => require('./SpinLog').SpinLog,
+    (spin: SpinLog) => spin.session
+  )
+  spins!: SpinLog[];
 }
