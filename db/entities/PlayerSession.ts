@@ -25,9 +25,9 @@ export class PlayerSession {
   @Column({ nullable: true })
   lastSpinAt?: Date;
 
-  @OneToMany(
-    () => require('./SpinLog').SpinLog,
-    (spin: SpinLog) => spin.session
-  )
+  // @OneToMany(
+  //   () => require('./SpinLog').SpinLog,
+  //   (spin: SpinLog) => spin.session
+  // )
   spins!: SpinLog[];
 }

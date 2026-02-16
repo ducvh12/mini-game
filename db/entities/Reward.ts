@@ -34,9 +34,9 @@ export class Reward {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @OneToMany(
-    () => require('./SpinLog').SpinLog,
-    (spin: SpinLog) => spin.reward
-  )
+  // @OneToMany(
+  //   () => require('./SpinLog').SpinLog,
+  //   (spin: SpinLog) => spin.reward
+  // )
   spins!: SpinLog[];
 }
