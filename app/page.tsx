@@ -76,7 +76,7 @@ export default function Home() {
     try {
       const res = await fetch('/api/admin/rewards');
       const data = await res.json();
-      
+
       const activeRewards = data
         .filter((r: any) => r.status === 'active' && r.probability > 0)
         .map((r: any, idx: number) => ({
@@ -86,7 +86,7 @@ export default function Home() {
           probability: r.probability,
           color: rewardColors[idx % rewardColors.length],
         }));
-      
+
       setWheelRewards(activeRewards);
     } catch (err) {
       console.error('Failed to fetch rewards:', err);
@@ -139,8 +139,8 @@ export default function Home() {
       }
 
       setSessionId(data.sessionId);
-      Cookies.set('sessionId', data.sessionId, { expires: 30 / 86400 }); // 30 seconds
-      Cookies.set('playerName', data.playerName, { expires: 30 / 86400 }); // 30 seconds
+      Cookies.set('sessionId', data.sessionId, { expires: 600 / 86400 }); // 10 minutes
+      Cookies.set('playerName', data.playerName, { expires: 600 / 86400 }); // 10 minutes
       setError('');
       setStage('spinning');
     } catch (err) {
@@ -179,7 +179,7 @@ export default function Home() {
 
   const handleSpinComplete = (rewardIndex: number) => {
     setSelectedRewardIndex(rewardIndex);
-    
+
     setTimeout(() => {
       setStage('reveal');
       setSpinning(false);
@@ -188,7 +188,7 @@ export default function Home() {
 
   const handleOpenEnvelope = () => {
     setIsOpeningEnvelope(true);
-    
+
     // Confetti explosion with red and gold colors
     const duration = 2000;
     const animationEnd = Date.now() + duration;
@@ -198,7 +198,7 @@ export default function Home() {
       return Math.random() * (max - min) + min;
     }
 
-    const interval: any = setInterval(function() {
+    const interval: any = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
 
       if (timeLeft <= 0) {
@@ -206,7 +206,7 @@ export default function Home() {
       }
 
       const particleCount = 50 * (timeLeft / duration);
-      
+
       confetti({
         ...defaults,
         particleCount,
@@ -219,7 +219,7 @@ export default function Home() {
     setTimeout(() => {
       setStage('result');
       setIsOpeningEnvelope(false);
-      
+
       if (reward && reward.type === 'money' && parseInt(reward.value) >= 20000) {
         confetti({
           particleCount: 100,
@@ -260,9 +260,9 @@ export default function Home() {
                 transition={{ type: 'spring', duration: 0.8 }}
                 className="text-center"
               >
-                <motion.h1 
+                <motion.h1
                   className="text-4xl md:text-9xl font-bold text-yellow-300 mb-6 text-shadow drop-shadow-2xl"
-                  animate={{ 
+                  animate={{
                     textShadow: [
                       '0 0 20px rgba(255,215,0,0.5)',
                       '0 0 40px rgba(255,215,0,0.8)',
@@ -276,7 +276,7 @@ export default function Home() {
                 <p className="text-3xl md:text-4xl text-white mb-12 text-shadow font-bold">
                   Chúc Mừng Năm Mới 2026 🎊
                 </p>
-                <motion.div 
+                <motion.div
                   className="bg-white/95 backdrop-blur-md rounded-3xl p-10 shadow-2xl max-w-md mx-auto border-4 border-yellow-400"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: 'spring', stiffness: 300 }}
@@ -292,7 +292,7 @@ export default function Home() {
                     maxLength={30}
                   />
                   {error && (
-                    <motion.p 
+                    <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-600 mb-4 text-sm font-semibold bg-red-50 py-2 px-4 rounded-lg"
@@ -333,7 +333,7 @@ export default function Home() {
               </motion.div>
 
               {wheelRewards.length > 0 && (
-                <motion.div 
+                <motion.div
                   className="mb-8"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -348,7 +348,7 @@ export default function Home() {
               )}
 
               {error && (
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-white bg-red-600/90 backdrop-blur-sm px-8 py-4 rounded-2xl mb-6 text-xl font-semibold shadow-lg border-2 border-red-400"
@@ -360,11 +360,10 @@ export default function Home() {
               <motion.button
                 onClick={handleSpin}
                 disabled={spinning || hasSpun}
-                className={`bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 text-red-600 text-3xl font-bold py-8 px-16 rounded-3xl shadow-2xl transform transition-all border-4 border-yellow-500 relative overflow-hidden ${
-                  spinning || hasSpun
+                className={`bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 text-red-600 text-3xl font-bold py-8 px-16 rounded-3xl shadow-2xl transform transition-all border-4 border-yellow-500 relative overflow-hidden ${spinning || hasSpun
                     ? 'opacity-50 cursor-not-allowed'
                     : 'hover:scale-110 hover:shadow-3xl active:scale-95'
-                }`}
+                  }`}
                 whileHover={spinning || hasSpun ? {} : { y: -5 }}
                 whileTap={spinning || hasSpun ? {} : { scale: 0.95 }}
               >
@@ -398,19 +397,19 @@ export default function Home() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleOpenEnvelope}
                   className="cursor-pointer mb-8 relative"
-                  animate={isOpeningEnvelope ? { 
+                  animate={isOpeningEnvelope ? {
                     scale: [1, 1.5, 2, 0],
                     rotate: [0, 10, -10, 720],
                     opacity: [1, 1, 1, 0],
-                  } : { 
+                  } : {
                     y: [0, -15, 0],
                     rotate: [0, 5, -5, 0],
                   }}
-                  transition={isOpeningEnvelope ? { 
+                  transition={isOpeningEnvelope ? {
                     duration: 1.5,
-                    ease: "easeInOut" 
-                  } : { 
-                    duration: 2, 
+                    ease: "easeInOut"
+                  } : {
+                    duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
@@ -452,7 +451,7 @@ export default function Home() {
                       onClick={handleOpenEnvelope}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      animate={{ 
+                      animate={{
                         boxShadow: [
                           '0 0 20px rgba(239, 68, 68, 0.5)',
                           '0 0 40px rgba(239, 68, 68, 0.8)',
@@ -485,7 +484,7 @@ export default function Home() {
                 className="text-center mb-12 bg-white/95 backdrop-blur-md rounded-3xl p-12 shadow-2xl border-4 border-yellow-400 max-w-2xl"
               >
                 <motion.div
-                  animate={{ 
+                  animate={{
                     rotate: [0, 10, -10, 10, 0],
                     scale: [1, 1.1, 1.1, 1.1, 1]
                   }}
@@ -493,7 +492,7 @@ export default function Home() {
                 >
                   <GiPartyPopper className="text-yellow-500 text-9xl mx-auto mb-6 drop-shadow-xl" />
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -501,9 +500,9 @@ export default function Home() {
                   className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-6 mb-6 border-4 border-yellow-400"
                 >
                   {reward.type === 'money' && (
-                    <motion.p 
+                    <motion.p
                       className="text-8xl font-bold text-yellow-300 mb-2 drop-shadow-lg"
-                      animate={{ 
+                      animate={{
                         scale: [1, 1.1, 1],
                       }}
                       transition={{ duration: 1, repeat: Infinity }}
@@ -512,8 +511,8 @@ export default function Home() {
                     </motion.p>
                   )}
                 </motion.div>
-                
-                <motion.p 
+
+                <motion.p
                   className="text-2xl text-gray-700 font-semibold px-6 leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -542,9 +541,9 @@ export default function Home() {
             transition={{ delay: 0.5 }}
             className="mt-12 bg-gradient-to-br from-white/95 to-yellow-50/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl border-4 border-yellow-400 max-w-2xl mx-auto"
           >
-            <motion.h3 
+            <motion.h3
               className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600 mb-6 text-center flex items-center justify-center gap-3"
-              animate={{ 
+              animate={{
                 scale: [1, 1.05, 1],
               }}
               transition={{ duration: 2, repeat: Infinity }}
